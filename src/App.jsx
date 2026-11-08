@@ -19,23 +19,40 @@ createdAt: new Date().toISOString()
 setChats(previous => [chat, ...previous]);
 setActiveChat(chat.id);
 
+return chat.id;
+
 }
 
 function updateChat(id, messages) {
-setChats(previous =>
-previous.map(chat =>
-chat.id === id
-? {
-...chat,
-messages,
-title: messages[0]?.content?.slice(0, 40) || chat.title
-}
-: chat
-)
-);
+setChats(previous => {
+const exists = previous.some(chat => chat.id === id);
+
+  if (!exists) {
+    return [
+      {
+        id,
+        title: messages[0]?.content?.slice(0, 40) || 'Nouvelle conversation',
+        messages,
+        createdAt: new Date().toISOString()
+      },
+      ...previous
+    ];
+  }
+
+  return previous.map(chat =>
+    chat.id === id
+      ? {
+          ...chat,
+          messages,
+          title: messages[0]?.content?.slice(0, 40) || chat.title
+        }
+      : chat
+  );
+});
+
 }
 
-const currentChat = chats.find(chat => chat.id === activeChat);
+const currentChat = chats.find(chat => chat.id === activeChat) || null;
 
 return (
 <div className="app-shell">
@@ -47,7 +64,7 @@ return (
     onNewChat={createChat}
     onSelectChat={setActiveChat}
     isOpen={sidebarOpen}
-    onToggle={() => setSidebarOpen(!sidebarOpen)}
+    onToggle={() => setSidebarOpen(value => !value)}
   />
 
   <main className="main-content">

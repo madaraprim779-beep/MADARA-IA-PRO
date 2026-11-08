@@ -8,36 +8,33 @@ if (!saved) return [];
 
 const chats = JSON.parse(saved);
 
-return Array.isArray(chats) ? chats : [];
+if (!Array.isArray(chats)) return [];
+
+return chats.filter(chat =>
+  chat &&
+  typeof chat.id === 'string' &&
+  Array.isArray(chat.messages)
+);
 
 } catch (error) {
-console.error('Erreur de lecture:', error);
+console.error('Erreur de lecture des conversations :', error);
 return [];
 }
 }
 
 export function saveChats(chats) {
 try {
-localStorage.setItem(
-STORAGE_KEY,
-JSON.stringify(chats)
-);
-
+localStorage.setItem(STORAGE_KEY, JSON.stringify(chats));
 return true;
-
 } catch (error) {
-console.error('Erreur de sauvegarde:', error);
+console.error('Erreur de sauvegarde :', error);
 return false;
 }
 }
 
 export function deleteChat(chatId) {
-const chats = loadChats();
-const updatedChats = chats.filter(
-chat => chat.id !== chatId
-);
-
-return saveChats(updatedChats);
+const chats = loadChats().filter(chat => chat.id !== chatId);
+return saveChats(chats);
 }
 
 export function clearChats() {
@@ -45,7 +42,7 @@ try {
 localStorage.removeItem(STORAGE_KEY);
 return true;
 } catch (error) {
-console.error('Erreur de suppression:', error);
+console.error('Erreur de suppression :', error);
 return false;
 }
 }

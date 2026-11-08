@@ -1,0 +1,107 @@
+:root {
+font-family: 'Inter', sans-serif;
+color: #ffffff;
+background: #080808;
+font-synthesis: none;
+text-rendering: optimizeLegibility;
+--red: #f12b3d;
+--red-glow: #ff344f;
+--surface: #111114;
+--border: rgba(255,255,255,.09);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  }
+
+body {
+min-width: 320px;
+min-height: 100vh;
+overflow: hidden;
+}
+
+button, textarea, input {
+font: inherit;
+}
+
+button {
+cursor: pointer;
+}
+
+.app-shell {
+display: flex;
+width: 100%;
+height: 100dvh;
+background: #080808;
+position: relative;
+overflow: hidden;
+}
+
+.cosmic-background {
+position: fixed;
+inset: 0;
+z-index: 0;
+pointer-events: none;
+background:
+radial-gradient(ellipse at 80% 20%, rgba(160, 15, 35, .18), transparent 45%),
+radial-gradient(ellipse at 15% 85%, rgba(100, 10, 35, .16), transparent 40%),
+linear-gradient(135deg, #080808, #10090c, #080808);
+background-size: 200% 200%;
+animation: cosmicMove 15s ease-in-out infinite alternate;
+}
+
+.cosmic-background::before {
+content: "";
+position: absolute;
+inset: 0;
+opacity: .3;
+background-image: radial-gradient(#ff5265 1px, transparent 1px);
+background-size: 55px 55px;
+animation: particles 35s linear infinite;
+}
+
+.cosmic-background::after {
+content: "";
+position: absolute;
+inset: 0;
+background: radial-gradient(ellipse at center, transparent 25%, #080808 100%);
+}
+
+@keyframes cosmicMove {
+from { background-position: 0% 0%; }
+to { background-position: 100% 100%; }
+}
+
+@keyframes particles {
+from { transform: translateY(0); }
+to { transform: translateY(-110px); }
+}
+
+.main-content {
+position: relative;
+z-index: 1;
+flex: 1;
+min-width: 0;
+height: 100%;
+}
+
+::selection {
+background: rgba(241,43,61,.4);
+}
+
+::-webkit-scrollbar {
+width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+background: #383035;
+border-radius: 10px;
+}
+
+@media (max-width: 700px) {
+.app-shell {
+height: 100dvh;
+}
+}

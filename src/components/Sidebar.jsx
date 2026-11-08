@@ -6,9 +6,7 @@ MessageSquare,
 Settings,
 PanelLeftClose,
 PanelLeftOpen,
-Sparkles,
-Trash2,
-X
+Sparkles
 } from 'lucide-react';
 
 export default function Sidebar({
@@ -16,106 +14,142 @@ chats = [],
 activeChat,
 onNewChat,
 onSelectChat,
-isOpen,
+isOpen = true,
 onToggle
 }) {
 const [search, setSearch] = useState('');
 
 const filteredChats = chats.filter(chat =>
-chat.title.toLowerCase().includes(search.toLowerCase())
+(chat.title || 'Nouvelle conversation')
+.toLowerCase()
+.includes(search.toLowerCase())
 );
 
+if (!isOpen) {
 return (
-<>
-{!isOpen && (
-<button className="sidebar-reopen" onClick={onToggle}>
-<PanelLeftOpen size={20} />
+<button
+type="button"
+className="sidebar-reopen"
+onClick={onToggle}
+aria-label="Ouvrir le menu"
+>
+<PanelLeftOpen size={19} />
 </button>
-)}
+);
+}
 
-  {isOpen && (
-    <aside className="sidebar">
-      <div className="sidebar-header">
-        <div className="brand">
-          <div className="brand-icon">
-            <Sparkles size={22} />
-          </div>
-          <div>
-            <h2>MADARA <span>AI</span></h2>
-            <small>PRO INTELLIGENCE</small>
-          </div>
-        </div>
+return (
+<aside className="sidebar">
+<div className="sidebar-header">
+<div className="brand">
+<div className="brand-icon">
+<Sparkles size={21} />
+</div>
 
-        <button className="icon-button" onClick={onToggle}>
-          <PanelLeftClose size={19} />
-        </button>
+      <div>
+        <h2>MADARA <span>AI</span></h2>
+        <small>PRO INTELLIGENCE</small>
       </div>
+    </div>
 
-      <button className="new-chat-button" onClick={onNewChat}>
-        <Plus size={19} />
-        <span>Nouvelle conversation</span>
+    <button
+      type="button"
+      className="icon-button"
+      onClick={onToggle}
+      aria-label="Fermer le menu"
+    >
+      <PanelLeftClose size={19} />
+    </button>
+  </div>
+
+  <button
+    type="button"
+    className="new-chat-button"
+    onClick={onNewChat}
+  >
+    <Plus size={18} />
+    Nouvelle conversation
+  </button>
+
+  <div className="sidebar-search">
+    <Search size={16} />
+
+    <input
+      type="search"
+      placeholder="Rechercher une conversation..."
+      value={search}
+      onChange={event => setSearch(event.target.value)}
+    />
+
+    {search && (
+      <button
+        type="button"
+        onClick={() => setSearch('')}
+        aria-label="Effacer la recherche"
+      >
+        ×
       </button>
+    )}
+  </div>
 
-      <div className="sidebar-search">
-        <Search size={17} />
-        <input
-          type="text"
-          placeholder="Rechercher..."
-          value={search}
-          onChange={event => setSearch(event.target.value)}
-        />
-        {search && (
-          <button onClick={() => setSearch('')}>
-            <X size={15} />
+  <div className="history-section">
+    <p className="section-heading">HISTORIQUE</p>
+
+    <div className="chat-history">
+      {filteredChats.length > 0 ? (
+        filteredChats.map(chat => (
+          <button
+            type="button"
+            key={chat.id}
+            className={`history-item ${
+              activeChat === chat.id ? 'active' : ''
+            }`}
+            onClick={() => onSelectChat(chat.id)}
+          >
+            <MessageSquare size={16} />
+            <span>
+              {chat.title || 'Nouvelle conversation'}
+            </span>
           </button>
-        )}
+        ))
+      ) : (
+        <p className="empty-history">
+          {search
+            ? 'Aucune conversation trouvée.'
+            : 'Tes conversations apparaîtront ici.'}
+        </p>
+      )}
+    </div>
+  </div>
+
+  <div className="sidebar-footer">
+    <button
+      type="button"
+      className="history-item"
+      onClick={() => window.dispatchEvent(
+        new Event('madara:open-settings')
+      )}
+    >
+      <Settings size={17} />
+      <span>Paramètres</span>
+    </button>
+
+    <div className="user-profile">
+      <div className="user-avatar">
+        <Sparkles size={17} />
       </div>
 
-      <div className="history-section">
-        <div className="section-heading">
-          HISTORIQUE
-        </div>
-
-        <div className="chat-history">
-          {filteredChats.length > 0 ? (
-            filteredChats.map(chat => (
-              <button
-                key={chat.id}
-                className={`history-item ${
-                  activeChat === chat.id ? 'active' : ''
-                }`}
-                onClick={() => onSelectChat(chat.id)}
-              >
-                <MessageSquare size={16} />
-                <span>{chat.title}</span>
-              </button>
-            ))
-          ) : (
-            <p className="empty-history">
-              {search
-                ? 'Aucun résultat.'
-                : 'Tes conversations apparaîtront ici.'}
-            </p>
-          )}
-        </div>
+      <div className="user-info">
+        <strong>MADARA AI</strong>
+        <small>Version PRO</small>
       </div>
+    </div>
 
-      <div className="sidebar-footer">
-        <div className="user-profile">
-          <div className="user-avatar">M</div>
-          <div className="user-info">
-            <strong>MADARA USER</strong>
-            <small>Compte personnel</small>
-          </div>
-          <Settings size={19} />
-        </div>
-        <div className="sidebar-version">
-          MADARA AI PRO · V1.0
-        </div>
-      </div>
-    </aside>
-  )}
-</>
+    <p className="sidebar-version">
+      MADARA AI PRO · V1.0
+    </p>
+  </div>
+</aside>
 
 );
 }
